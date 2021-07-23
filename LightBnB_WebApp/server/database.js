@@ -24,7 +24,13 @@ const getUserWithEmail = (email) => {
       WHERE email = $1;
     `, [email])
     .then((result) => {
-      console.log(result.rows);
+      const user = result.rows[0];
+      if (user) {
+        console.log(result.rows);
+        return user;
+      } else {
+        return null;
+      }
     })
     .catch((err) => {
       console.log(err.message);
@@ -45,7 +51,13 @@ const getUserWithId = (id) => {
       WHERE id = $1;
     `, [id])
     .then((result) => {
-      console.log(result.rows);
+      const user = result.rows[0];
+      if (user) {
+        console.log(result.rows);
+        return user;
+      } else {
+        return null;
+      }
     })
     .catch((err) => {
       console.log(err.message);
@@ -63,10 +75,12 @@ const addUser = (user) => {
   return pool
     .query(`
       INSERT INTO users (name, email, password)
-      VALUES ($1, $2, $3);
+      VALUES ($1, $2, $3)
+      RETURNING *;
     `, [user.name, user.email, user.password])
     .then((result) => {
       console.log(result.rows);
+      return result.rows;
     })
     .catch((err) => {
       console.log(err.message);
@@ -99,6 +113,7 @@ exports.getAllReservations = getAllReservations;
     .query(`SELECT * FROM properties LIMIT $1`, [limit])
     .then((result) => {
       console.log(result.rows);
+      return result.rows;
     })
     .catch((err) => {
       console.log(err.message);
